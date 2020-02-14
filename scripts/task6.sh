@@ -1,38 +1,31 @@
 #!/bin/bash
 
-string=""
-char=""
-valid=1
+string=~null
+char=~null
+stringInput=0
+charInput=0
 
-if [ $# == 2 ]; then
-	if [ $1 == "-s" ]; then
-		string=$2
-	else
-		valid=0
-	fi
-fi
-if [ $# == 4 ]; then
-	if [ $1 == "-s" ]; then
-		string=$2
-		if [ $3 == "-c" ]; then
-			char=$4
-		else
-			valid=0
-		fi
-	elif [ $1 == "-c" ]; then
-		char=$2
-		if [ $3 == "-s" ]; then
-			string=$4
-		else
-			valid=0
-		fi
-	else
-		valid=0
-	fi
-fi
+while getopts ":c:s:" opt; do
+	case $opt in
+	c)
+		char=$OPTARG
+		charInput=1
+		;;
+	s)
+		string=$OPTARG
+		stringInput=1
+		;;
+	\?)
+		echo "Invalid flag -$OPTARG"; exit 1
+		;;
+	:)
+		echo "-$OPTARG requires an argument"; exit 1
+		;;
+	esac
+done
 
-if [ $valid == 1 ]; then
-	if [ $# == 2 ]; then
+if [ $stringInput == 1 ]; then
+	if [ $charInput == 0 ]; then
 		echo $string
 	else
 		count=$((${#string}+4))
@@ -43,6 +36,6 @@ if [ $valid == 1 ]; then
 		echo "${s// /${char}}"
 	fi
 else
-	echo "Invalid arguments.."
+	echo "Error: no string was provided.."
 fi
 
